@@ -910,4 +910,40 @@ mod test {
             }
         }
     }
+
+    #[test]
+    fn test_empty_dir() {
+        let dfs = get_dfs();
+        {
+            let fs = dfs.get_hdfs().ok().unwrap();
+
+            // Test list status with empty directory
+            {
+                let uuid = Uuid::new_v4().to_string();
+                let test_dir = format!("/{}", uuid);
+                let empty_dir = format!("/{}", "_empty");
+
+                match fs.mkdir(&test_dir) {
+                    Ok(_) => println!("{} created", test_dir),
+                    Err(_) => panic!("Couldn't create {} directory", test_dir),
+                };
+
+                match fs.mkdir(&empty_dir) {
+                    Ok(_) => println!("{} created", test_dir),
+                    Err(_) => panic!("Couldn't create {} directory", test_dir),
+                };
+
+                let test_file = format!("/{}/{}", &test_dir, "test.txt");
+
+                let file_info = fs.list_status(&test_dir).ok().unwrap();
+                assert!(file_info.len(), 1);
+
+                let file_info = fs.list_status(&empty_dir).ok().unwrap();
+                assert!(file_info.len(), 0);
+
+                // Clean up
+                assert!(fs.delete(&test_dir, true).is_ok());
+            }
+        }
+    }
 }
