@@ -234,13 +234,14 @@ impl HdfsFs {
             hdfsListDirectory(self.raw, cstr_path.as_ptr(), &mut entry_num)
         };
 
+        let mut list = Vec::new();
+
         if ptr.is_null() {
-            return Err(HdfsErr::Unknown);
+            return Ok(list);
         }
 
         let shared_ptr = Rc::new(HdfsFileInfoPtr::new_array(ptr, entry_num));
 
-        let mut list = Vec::new();
         for idx in 0..entry_num {
             list.push(FileStatus::from_array(shared_ptr.clone(), idx as u32));
         }
