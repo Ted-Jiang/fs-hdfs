@@ -934,12 +934,13 @@ mod test {
                 };
 
                 let test_file = format!("/{}/{}", &test_dir, "test.txt");
+                fs.create(&test_file).unwrap();
 
                 let file_info = fs.list_status(&test_dir).ok().unwrap();
-                assert!(file_info.len(), 1);
+                assert_eq!(file_info.len(), 1);
 
                 let file_info = fs.list_status(&empty_dir).ok().unwrap();
-                assert!(file_info.len(), 0);
+                assert_eq!(file_info.len(), 0);
 
                 // Clean up
                 assert!(fs.delete(&test_dir, true).is_ok());
