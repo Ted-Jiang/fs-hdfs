@@ -818,6 +818,8 @@ pub fn get_uri(path: &str) -> Result<String, HdfsErr> {
 #[cfg(test)]
 mod test {
     use uuid::Uuid;
+    use crate::err::HdfsErr;
+    use crate::hdfs::HdfsFile;
 
     use crate::minidfs::get_dfs;
 
@@ -935,7 +937,10 @@ mod test {
                 };
 
                 let test_file = format!("/{}/{}", &test_dir, "test.txt");
-                fs.create(&test_file).unwrap();
+                match fs.create(&test_file) {
+                    Ok(_) => println!("{} created", test_file),
+                    Err(_) => panic!("Couldn't create {} ", test_file),
+                }
 
                 let file_info = fs.list_status(&test_dir).ok().unwrap();
                 assert_eq!(file_info.len(), 1);
