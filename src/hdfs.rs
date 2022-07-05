@@ -936,7 +936,7 @@ mod test {
                     Err(_) => panic!("Couldn't create {} directory", test_dir),
                 };
 
-                let test_file = format!("/{}/{}", &test_dir, "test.txt");
+                let test_file = format!("{}/{}", &test_dir, "test.txt");
                 match fs.create(&test_file) {
                     Ok(_) => println!("{} created", test_file),
                     Err(_) => panic!("Couldn't create {} ", test_file),
